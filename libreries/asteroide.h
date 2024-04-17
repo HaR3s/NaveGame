@@ -11,7 +11,7 @@ public:
   ~Asteroide();
   void update();
   void draw();
-  void colicion(Nave &);
+  void colicion(Nave *&);
   void getMaxYX();
   void setY(int &);
   void setX(int);
@@ -28,9 +28,9 @@ private:
 inline Asteroide::Asteroide() {}
 
 inline Asteroide::Asteroide(int x, int y, float velosidad) {
-  this->x = x;
-  this->y = y;
-  this->velosidad = velosidad;
+  x = x;
+  y = y;
+  velosidad = velosidad;
 }
 
 inline Asteroide::~Asteroide() {}
@@ -56,26 +56,26 @@ inline void Asteroide::draw() {
   attroff(COLOR_PAIR(1));
 }
 
-inline void Asteroide::colicion(Nave &nave) {
-  if (x >= nave.getX() + 2 && x <= nave.getX() + 2 && y <= nave.getY() + 3 &&
-      y >= nave.getY() + 2) {
-    nave.setEnergy(nave.getEnergy() - 1);
+inline void Asteroide::colicion(Nave *&nave) {
+  if (x >= nave->getX() + 2 && x <= nave->getX() + 2 && y <= nave->getY() + 3 &&
+      y >= nave->getY() + 2) {
+    nave->setEnergy(nave->getEnergy() - 1);
 
     x = rand() % ANCHO - 3;
     y = 3;
   }
 
-  else if (x >= nave.getX() && x <= nave.getX() + 3 && y <= nave.getY() + 2 &&
-           y >= nave.getY() - 2) {
-    nave.setEnergy(nave.getEnergy() - 1);
+  else if (x >= nave->getX() && x <= nave->getX() + 3 &&
+           y <= nave->getY() + 2 && y >= nave->getY() - 2) {
+    nave->setEnergy(nave->getEnergy() - 1);
 
     x = rand() % ANCHO - 3;
     y = 3;
   }
 
-  else if (x >= nave.getX() && x <= nave.getX() + 5 && y <= nave.getY() + 3 &&
-           y >= nave.getY() + 3) {
-    nave.setEnergy(nave.getEnergy() - 1);
+  else if (x >= nave->getX() && x <= nave->getX() + 5 &&
+           y <= nave->getY() + 3 && y >= nave->getY() + 3) {
+    nave->setEnergy(nave->getEnergy() - 1);
 
     x = rand() % ANCHO - 3;
     y = 3;
