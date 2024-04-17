@@ -23,9 +23,9 @@ Nave nave;
 Asteroide asteroide;
 Estrella estrella;
 
-vector<Estrella> estrellas;
-vector<Asteroide> asteroides;
-vector<Projectil> projectiles;
+auto *estrellas_ptr = new vector<Estrella>;
+auto *asteroides_ptr = new vector<Asteroide>;
+auto *projectiles_ptr = new vector<Projectil>;
 
 // Prototipos de funciones
 
@@ -89,18 +89,18 @@ void setup() {
 
   nave.setup();
 
-  asteroides.clear();
-  projectiles.clear();
-  estrellas.clear();
+  asteroides_ptr->clear();
+  projectiles_ptr->clear();
+  estrellas_ptr->clear();
 
   for (int i = 0; i < 5; i++) {
-    asteroides.push_back(
+    asteroides_ptr->push_back(
         Asteroide(rand() % ANCHO + 2, rand() % ALTO + 3, 0.2f));
   }
 
   for (int i = 0; i < (ANCHO + 3) / 2; i++) {
 
-    estrellas.push_back(Estrella(rand() % ANCHO + 2, rand() % ALTO + 3));
+    estrellas_ptr->push_back(Estrella(rand() % ANCHO + 2, rand() % ALTO + 3));
   }
 }
 
@@ -135,7 +135,7 @@ void imput() {
     }
     break;
   case ' ':
-    projectiles.push_back(Projectil(nave.getX() + 2, nave.getY()));
+    projectiles_ptr->push_back(Projectil(nave.getX() + 2, nave.getY()));
     break;
   case 'e':
     nave.setEnergy(nave.getEnergy() - 1);
@@ -155,44 +155,44 @@ void update() {
 
   if (auxPuntaje >= 100) {
 
-    for (int i = 0; i < asteroides.size(); i++) {
-      asteroides[i].setVelosidad(asteroides[i].getVelosidad() + 0.1f);
-      asteroides[i].update();
-      asteroides[i].colicion(nave);
+    for (auto i = asteroides_ptr->begin(); i < asteroides_ptr->end(); i++) {
+      i->setVelosidad(i->getVelosidad() + 0.1f);
+      i->update();
+      i->colicion(nave);
       auxPuntaje = 0;
     }
   } else {
-    for (int i = 0; i < asteroides.size(); i++) {
-      asteroides[i].update();
-      asteroides[i].colicion(nave);
-      asteroides[i].setVelosidad(asteroides[i].getVelosidad());
+    for (auto i = asteroides_ptr->begin(); i < asteroides_ptr->end(); i++) {
+      i->update();
+      i->colicion(nave);
+      i->setVelosidad(i->getVelosidad());
     }
   }
 
   nave.update();
 
-  for (int i = 0; i < estrellas.size(); i++) {
-    estrellas[i].update();
+  for (auto i = estrellas_ptr->begin();  i < estrellas_ptr->end(); i++) {
+    i->update();
   }
 
-  for (int i = 0; i < projectiles.size(); i++) {
-    projectiles[i].update();
-    if (projectiles[i].limite()) {
-      projectiles.erase(projectiles.begin() + i);
+  for (auto i = projectiles_ptr->begin(); i < projectiles_ptr->end(); i++) {
+    i->update();
+    if (i->limite()) {
+      projectiles_ptr->erase(projectiles_ptr->begin() ++);
     }
   }
 
-  for (int i = 0; i < asteroides.size(); i++) {
-    for (int j = 0; j < projectiles.size(); j++) {
+  for (auto i = asteroides_ptr->begin(); i < asteroides_ptr->end(); i++) {
+    for (auto j = projectiles_ptr->begin(); j < projectiles_ptr->end(); j++) {
 
-      if (asteroides[i].getX() == projectiles[j].getX() &&
-          (asteroides[i].getY() == projectiles[j].getY() ||
-           asteroides[i].getY() > projectiles[j].getY())) {
+      if (i->getX() == j->getX() &&
+          (i->getY() == j->getY() ||
+           i->getY() > j->getY())) {
 
-        projectiles.erase(projectiles.begin());
-        asteroides.erase(asteroides.begin() + i);
-        asteroides.push_back(
-            Asteroide(rand() % ANCHO + 2, 3, asteroides[i].getVelosidad()));
+        projectiles_ptr->erase(projectiles_ptr->begin()++);
+        asteroides_ptr->erase(asteroides_ptr->begin() ++ );
+        asteroides_ptr->push_back(
+            Asteroide(rand() % ANCHO + 2, 3, i->getVelosidad()));
 
         puntaje += 10;
         auxPuntaje += 10;
@@ -230,8 +230,8 @@ void draw() {
 
   // Dibuja estrellas
 
-  for (int i = 0; i < estrellas.size(); i++) {
-    estrellas[i].draw();
+  for (auto i = estrellas_ptr->begin(); i < estrellas_ptr->end(); i++) {
+    i->draw();
   }
 
   // Dibujar nave
@@ -240,14 +240,14 @@ void draw() {
 
   // Dibujar Asteroide
 
-  for (int i = 0; i < asteroides.size(); i++) {
-    asteroides[i].draw();
+  for (auto i = asteroides_ptr->begin(); i < asteroides_ptr->end(); i++) {
+    i->draw();
   }
 
   // Dibujar projectiles
 
-  for (int i = 0; i < projectiles.size(); i++) {
-    projectiles[i].draw();
+  for (auto i = projectiles_ptr->begin(); i < projectiles_ptr->end(); i++) {
+    i->draw();
   }
 
   refresh();
