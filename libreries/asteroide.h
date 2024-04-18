@@ -22,7 +22,8 @@ public:
 
 private:
   float x, y, velosidad;
-  int ALTO, ANCHO;
+  int *ALTO = new int();
+  int *ANCHO = new int();
 };
 
 inline Asteroide::Asteroide() {}
@@ -40,9 +41,9 @@ inline void Asteroide::update() {
   getMaxYX();
   y += velosidad;
 
-  if (y >= ALTO - 1) {
+  if (y >= *ALTO - 1) {
 
-    x = rand() % (ANCHO - 3) + 2;
+    x = rand() % (*ANCHO - 3) + 2;
     y = 3;
   }
 }
@@ -61,7 +62,7 @@ inline void Asteroide::colicion(Nave *&nave) {
       y >= nave->getY() + 2) {
     nave->setEnergy(nave->getEnergy() - 1);
 
-    x = rand() % ANCHO - 3;
+    x = rand() % *ANCHO - 3;
     y = 3;
   }
 
@@ -69,7 +70,7 @@ inline void Asteroide::colicion(Nave *&nave) {
            y <= nave->getY() + 2 && y >= nave->getY() - 2) {
     nave->setEnergy(nave->getEnergy() - 1);
 
-    x = rand() % ANCHO - 3;
+    x = rand() % *ANCHO - 3;
     y = 3;
   }
 
@@ -77,12 +78,21 @@ inline void Asteroide::colicion(Nave *&nave) {
            y <= nave->getY() + 3 && y >= nave->getY() + 3) {
     nave->setEnergy(nave->getEnergy() - 1);
 
-    x = rand() % ANCHO - 3;
+    x = rand() % *ANCHO - 3;
     y = 3;
   }
 }
 
-inline void Asteroide::getMaxYX() { getmaxyx(stdscr, ALTO, ANCHO); }
+inline void Asteroide::getMaxYX() {
+
+  int x, y;
+
+  getmaxyx(stdscr, y, x);
+
+  ALTO = &y;
+  ANCHO = &x;
+}
+// inline void Asteroide::getMaxYX() { getmaxyx(stdscr, *ALTO, *ANCHO); }
 
 inline void Asteroide::setY(int &y) { this->y = y; }
 

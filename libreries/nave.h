@@ -4,6 +4,7 @@
 
 class Nave {
 public:
+  Nave(int *, int *);
   Nave();
   ~Nave();
   void setup();
@@ -16,26 +17,36 @@ public:
   int getEnergy();
   void setVidas(int);
   int getVidas();
-  void update();
-  void getMaxYX();
+  void update(int *, int *);
+  //  void getMaxYX(WINDOW*);
+  //void set(int *, int *);
 
 private:
   int m_x, m_y;
   int energy;
   int vidas;
-  int ALTO, ANCHO;
+  int *ALTO;
+  int *ANCHO;
   bool explotar;
 };
 
-inline Nave::Nave() {}
+inline Nave::Nave() : ALTO(new int), ANCHO(new int){}
 
-inline Nave::~Nave() {}
+inline Nave::Nave(int *alto, int *ancho) : ALTO(new int), ANCHO(new int){
+  *ALTO = *alto;
+  *ANCHO = *ancho;
+}
+
+inline Nave::~Nave() {
+  delete ALTO;
+  delete ANCHO;
+}
 
 inline void Nave::setup() {
-  getMaxYX();
+  // getMaxYX();
 
-  m_x = ANCHO / 2 - 3;
-  m_y = ALTO * 0.80 - 4;
+  m_x = *ANCHO / 2 - 3;
+  m_y = *ALTO * 0.80 - 4;
   energy = 3;
   vidas = 3;
   explotar = false;
@@ -94,8 +105,11 @@ inline void Nave::setVidas(int vidas) { this->vidas = vidas; }
 
 inline int Nave::getVidas() { return vidas; }
 
-inline void Nave::update() {
-  getMaxYX();
+inline void Nave::update(int *alto, int *ancho) {
+  // getMaxYX(wind);
+
+  *ALTO = *alto;
+  *ANCHO = *ancho;
 
   if (energy == 0) {
 
@@ -105,4 +119,10 @@ inline void Nave::update() {
   }
 }
 
-inline void Nave::getMaxYX() { getmaxyx(stdscr, ALTO, ANCHO); }
+// inline void Nave::getMaxYX(WINDOW* wind) { getmaxyx(wind, ALTO, ANCHO); }
+/*
+inline void Nave::set(int *alto, int *ancho) {
+  
+  *ALTO = *alto;
+  *ANCHO = *ancho;
+} */

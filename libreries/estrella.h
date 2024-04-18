@@ -14,28 +14,45 @@ public:
   float getVelosidad();
 
 private:
-  int ALTO, ANCHO;
+  int *ALTO;
+  int *ANCHO;
   float x, y, velosidad = 1;
 };
 
-inline Estrella::Estrella() {}
+inline Estrella::Estrella() {
+  ALTO = new int();
+  ANCHO= new int();
+}
 
 inline Estrella::Estrella(int x, int y) {
   this->x = x;
   this->y = y;
+  ALTO = new int();
+  ANCHO = new int();
 }
 
-inline Estrella::~Estrella() {}
+inline Estrella::~Estrella() {
+  delete ALTO;
+  delete ANCHO;
+}
 
-inline void Estrella::getMaxXY() { getmaxyx(stdscr, ALTO, ANCHO); }
+inline void Estrella::getMaxXY() {
+
+  int x, y;
+
+  getmaxyx(stdscr, y, x);
+
+  ALTO = &y;
+  ANCHO = &x;
+}
 
 inline void Estrella::update() {
   getMaxXY();
 
   y += velosidad;
 
-  if (y >= ALTO - 1) {
-    x = rand() % (ANCHO - 3) + 1;
+  if (y >= *ALTO - 1) {
+    x = rand() % (*ANCHO - 3) + 1;
     y = 3;
   }
 }

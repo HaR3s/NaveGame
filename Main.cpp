@@ -10,8 +10,8 @@
 
 using namespace std;
 
-int *ANCHO(nullptr);
-int *ALTO(nullptr);
+int *ANCHO = new int();
+int *ALTO = new int();
 const int DELAY = 100;
 
 bool game_over;
@@ -19,13 +19,13 @@ int puntaje;
 int auxPuntaje;
 bool salir;
 
-Nave *nave;
-Asteroide *asteroide;
-Estrella *estrella;
+Nave *nave = nullptr;
+Asteroide *asteroide = nullptr;
+Estrella *estrella = nullptr;
 
-auto *estrellas_ptr = new vector<Estrella>;
-auto *asteroides_ptr = new vector<Asteroide>;
-auto *projectiles_ptr = new vector<Projectil>;
+vector<Estrella> *estrellas_ptr = new vector<Estrella>;
+vector<Asteroide> *asteroides_ptr = new vector<Asteroide>;
+vector<Projectil> *projectiles_ptr = new vector<Projectil>;
 
 // Prototipos de funciones
 
@@ -71,6 +71,19 @@ int main() {
     }
 
     gameOver();
+
+    // Liberando la memoria
+
+    delete estrellas_ptr;
+    estrellas_ptr = nullptr;
+    delete asteroides_ptr;
+    asteroides_ptr = nullptr;
+    delete projectiles_ptr;
+    projectiles_ptr = nullptr;
+    delete ANCHO;
+    ANCHO = nullptr;
+    delete ALTO;
+    ALTO = nullptr;
   }
 
   endwin();
@@ -83,6 +96,9 @@ int main() {
 
 void setup() {
   getMaxXY();
+
+ // nave->set(ALTO, ANCHO);
+
   game_over = false;
   puntaje = 0;
   auxPuntaje = 0;
@@ -169,7 +185,7 @@ void update() {
     }
   }
 
-  nave->update();
+  nave->update(ALTO, ANCHO);
 
   for (auto i = estrellas_ptr->begin(); i < estrellas_ptr->end(); i++) {
     i->update();
@@ -178,7 +194,7 @@ void update() {
   for (auto i = projectiles_ptr->begin(); i < projectiles_ptr->end(); i++) {
     i->update();
     if (i->limite()) {
-      projectiles_ptr->erase(projectiles_ptr->begin()++);
+      projectiles_ptr->erase(i);
     }
   }
 
@@ -188,8 +204,8 @@ void update() {
       if (i->getX() == j->getX() &&
           (i->getY() == j->getY() || i->getY() > j->getY())) {
 
-        projectiles_ptr->erase(projectiles_ptr->begin()++);
-        asteroides_ptr->erase(asteroides_ptr->begin()++);
+        projectiles_ptr->erase(j);
+        asteroides_ptr->erase(i);
         asteroides_ptr->push_back(
             Asteroide(rand() % *ANCHO + 2, 3, i->getVelosidad()));
 
@@ -217,6 +233,7 @@ void draw() {
   box(stdscr, 0, 0);
 
   // Dibja la linea inferior a las Vidas y Energia
+
   for (int i = 0; i < *ANCHO; i++) {
     mvhline(2, 1, ACS_HLINE, *ANCHO - 2);
   }
